@@ -181,7 +181,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .bar-fill{height:100%;border-radius:3px}
 .bar-amount{font-size:11px;font-family:var(--mono);color:var(--text2);width:65px;text-align:right}
 
-/* TABLA CORREGIDA - anchos fijos y alineación perfecta */
 .tbl-wrap{overflow-x:auto}
 .tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
 .tbl th{padding:10px 8px;text-align:left;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border)}
@@ -342,9 +341,8 @@ function setYear(y,el){
   currentYear=y;
   document.querySelectorAll('.yr-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  if(currentSection !== 'gastos' && currentSection !== 'etl' && currentSection !== 'config' && currentSection !== 'forecast' && currentSection !== 'cashflow'){
-    renderSection(currentSection);
-  }
+  // Renderizar nuevamente la sección actual con el nuevo año
+  renderSection(currentSection);
 }
 
 function showNotifications(){
@@ -373,57 +371,128 @@ function makeSvg(series,color){
 
 const STATE_CLASS={Pagado:'b-green',Parcial:'b-amber',Pendiente:'b-red'};
 
-// DATOS CORREGIDOS - TODAS LAS TABLAS CON SUS 5 COLUMNAS COMPLETAS
+// DATOS COMPLETOS POR AÑO - TODOS LOS VALORES CAMBIAN SEGÚN EL AÑO
 const DATA_BY_YEAR = {
   2024: {
     facturacion:{
-      kpis:[{l:'Total facturado',v:'$2.523.100',d:'▲ 7.2%',up:true},{l:'Cías. seguros',v:'$1.712.400',d:'▲ 5.8%',up:true},{l:'Privados',v:'$578.200',d:'▲ 14.2%',up:true},{l:'Varios',v:'$232.500',d:'▼ 1.5%',up:false}],
+      kpis:[
+        {l:'Total facturado',v:'$2.523.100',d:'▲ 7.2%',up:true},
+        {l:'Cías. seguros',v:'$1.712.400',d:'▲ 5.8%',up:true},
+        {l:'Privados',v:'$578.200',d:'▲ 14.2%',up:true},
+        {l:'Varios',v:'$232.500',d:'▼ 1.5%',up:false}
+      ],
       bars:[{n:'Privados',v:578,m:850},{n:'Mapfre',v:432,m:850},{n:'Adeslas',v:318,m:850},{n:'Sanitas',v:264,m:850},{n:'Asisa',v:212,m:850}],
       chart:[165,189,210,198,234,256,220,172,278,258,262,221],
-      table:[{n:'Mapfre Salud',f:234,i:'$487.200',c:'$421.300',e:'Pagado'},{n:'Adeslas',f:198,i:'$362.100',c:'$298.700',e:'Parcial'},{n:'Sanitas',f:176,i:'$298.400',c:'$298.400',e:'Pagado'},{n:'Privados',f:412,i:'$654.820',c:'$612.400',e:'Pagado'},{n:'Asisa',f:143,i:'$241.700',c:'$187.200',e:'Pendiente'}]
+      table:[
+        {n:'Mapfre Salud',f:234,i:'$487.200',c:'$398.000',e:'Pagado'},
+        {n:'Adeslas',f:198,i:'$362.100',c:'$275.400',e:'Parcial'},
+        {n:'Sanitas',f:176,i:'$298.400',c:'$264.700',e:'Pagado'},
+        {n:'Privados',f:412,i:'$578.200',c:'$542.100',e:'Pagado'},
+        {n:'Asisa',f:143,i:'$241.700',c:'$165.800',e:'Pendiente'}
+      ]
     },
     cobros:{
-      kpis:[{l:'Total cobrado',v:'$2.054.000',d:'▲ 6.5%',up:true},{l:'Cobrado este mes',v:'$195.200',d:'▲ 3.8%',up:true},{l:'Pendiente',v:'$469.100',d:'▼ 1.2%',up:false},{l:'Tasa cobro',v:'81.4%',d:'▲ 1.1pp',up:true}],
+      kpis:[
+        {l:'Total cobrado',v:'$2.054.000',d:'▲ 6.5%',up:true},
+        {l:'Cobrado este mes',v:'$195.200',d:'▲ 3.8%',up:true},
+        {l:'Pendiente',v:'$469.100',d:'▼ 1.2%',up:false},
+        {l:'Tasa cobro',v:'81.4%',d:'▲ 1.1pp',up:true}
+      ],
       bars:[{n:'Privados',v:542,m:750},{n:'Mapfre',v:398,m:750},{n:'Adeslas',v:275,m:750},{n:'Sanitas',v:264,m:750},{n:'Asisa',v:166,m:750}],
       chart:[148,172,191,168,214,236,202,154,248,232,240,198],
-      table:[{n:'Privados',f:358,i:'$578.200',c:'$542.100',e:'Pagado'},{n:'Sanitas',f:158,i:'$264.700',c:'$264.700',e:'Pagado'},{n:'Adeslas',f:178,i:'$318.100',c:'$275.400',e:'Parcial'},{n:'Mapfre',f:210,i:'$432.200',c:'$398.000',e:'Pagado'}]
+      table:[
+        {n:'Privados',f:358,i:'$578.200',c:'$542.100',e:'Pagado'},
+        {n:'Sanitas',f:158,i:'$264.700',c:'$264.700',e:'Pagado'},
+        {n:'Adeslas',f:178,i:'$318.100',c:'$275.400',e:'Parcial'},
+        {n:'Mapfre',f:210,i:'$432.200',c:'$398.000',e:'Pagado'}
+      ]
     }
   },
   2025: {
     facturacion:{
-      kpis:[{l:'Total facturado',v:'$2.847.340',d:'▲ 12.4%',up:true},{l:'Cías. seguros',v:'$1.923.100',d:'▲ 9.1%',up:true},{l:'Privados (Axon)',v:'$654.820',d:'▲ 18.7%',up:true},{l:'Varios / Psicotéc.',v:'$269.420',d:'▼ 3.2%',up:false}],
+      kpis:[
+        {l:'Total facturado',v:'$2.847.340',d:'▲ 12.4%',up:true},
+        {l:'Cías. seguros',v:'$1.923.100',d:'▲ 9.1%',up:true},
+        {l:'Privados (Axon)',v:'$654.820',d:'▲ 18.7%',up:true},
+        {l:'Varios / Psicotéc.',v:'$269.420',d:'▼ 3.2%',up:false}
+      ],
       bars:[{n:'Privados (Axon)',v:654,m:900},{n:'Mapfre Salud',v:487,m:900},{n:'Adeslas',v:362,m:900},{n:'Sanitas',v:298,m:900},{n:'Asisa',v:241,m:900},{n:'DKV',v:186,m:900}],
       chart:[198,221,243,215,267,289,254,198,312,287,298,265],
-      table:[{n:'Mapfre Salud',f:234,i:'$487.200',c:'$421.300',e:'Pagado'},{n:'Adeslas',f:198,i:'$362.100',c:'$298.700',e:'Parcial'},{n:'Sanitas',f:176,i:'$298.400',c:'$298.400',e:'Pagado'},{n:'Privados',f:412,i:'$654.820',c:'$612.400',e:'Pagado'},{n:'Asisa',f:143,i:'$241.700',c:'$187.200',e:'Pendiente'}]
+      table:[
+        {n:'Mapfre Salud',f:234,i:'$487.200',c:'$421.300',e:'Pagado'},
+        {n:'Adeslas',f:198,i:'$362.100',c:'$298.700',e:'Parcial'},
+        {n:'Sanitas',f:176,i:'$298.400',c:'$298.400',e:'Pagado'},
+        {n:'Privados',f:412,i:'$654.820',c:'$612.400',e:'Pagado'},
+        {n:'Asisa',f:143,i:'$241.700',c:'$187.200',e:'Pendiente'}
+      ]
     },
     cobros:{
-      kpis:[{l:'Total cobrado',v:'$2.317.000',d:'▲ 8.2%',up:true},{l:'Cobrado este mes',v:'$218.400',d:'▲ 5.1%',up:true},{l:'Pendiente cobro',v:'$530.340',d:'▼ 2.1%',up:false},{l:'Tasa de cobro',v:'81.4%',d:'▲ 1.8pp',up:true}],
+      kpis:[
+        {l:'Total cobrado',v:'$2.317.000',d:'▲ 8.2%',up:true},
+        {l:'Cobrado este mes',v:'$218.400',d:'▲ 5.1%',up:true},
+        {l:'Pendiente cobro',v:'$530.340',d:'▼ 2.1%',up:false},
+        {l:'Tasa de cobro',v:'81.4%',d:'▲ 1.8pp',up:true}
+      ],
       bars:[{n:'Privados',v:612,m:850},{n:'Mapfre',v:421,m:850},{n:'Adeslas',v:299,m:850},{n:'Sanitas',v:298,m:850},{n:'Asisa',v:187,m:850}],
       chart:[171,194,209,185,230,252,218,172,268,245,257,216],
-      table:[{n:'Privados',f:412,i:'$654.820',c:'$612.400',e:'Pagado'},{n:'Sanitas',f:176,i:'$298.400',c:'$298.400',e:'Pagado'},{n:'Adeslas',f:198,i:'$362.100',c:'$298.700',e:'Parcial'},{n:'Mapfre',f:234,i:'$487.200',c:'$421.300',e:'Pagado'}]
+      table:[
+        {n:'Privados',f:412,i:'$654.820',c:'$612.400',e:'Pagado'},
+        {n:'Sanitas',f:176,i:'$298.400',c:'$298.400',e:'Pagado'},
+        {n:'Adeslas',f:198,i:'$362.100',c:'$298.700',e:'Parcial'},
+        {n:'Mapfre',f:234,i:'$487.200',c:'$421.300',e:'Pagado'}
+      ]
     }
   },
   2026: {
     facturacion:{
-      kpis:[{l:'Total facturado',v:'$1.942.180',d:'▲ 8.1%',up:true},{l:'Cías. seguros',v:'$1.324.500',d:'▲ 6.2%',up:true},{l:'Privados',v:'$451.230',d:'▲ 12.4%',up:true},{l:'Varios',v:'$166.450',d:'▲ 3.1%',up:true}],
+      kpis:[
+        {l:'Total facturado',v:'$1.942.180',d:'▲ 8.1%',up:true},
+        {l:'Cías. seguros',v:'$1.324.500',d:'▲ 6.2%',up:true},
+        {l:'Privados',v:'$451.230',d:'▲ 12.4%',up:true},
+        {l:'Varios',v:'$166.450',d:'▲ 3.1%',up:true}
+      ],
       bars:[{n:'Privados',v:451,m:700},{n:'Mapfre',v:334,m:700},{n:'Adeslas',v:248,m:700},{n:'Sanitas',v:205,m:700},{n:'Asisa',v:162,m:700}],
       chart:[145,168,192,178,221,245,212,168,254,231,244,202],
-      table:[{n:'Mapfre',f:162,i:'$334.200',c:'$289.000',e:'Pagado'},{n:'Adeslas',f:138,i:'$248.700',c:'$198.200',e:'Parcial'},{n:'Privados',f:278,i:'$451.230',c:'$421.500',e:'Pagado'}]
+      table:[
+        {n:'Mapfre',f:162,i:'$334.200',c:'$289.000',e:'Pagado'},
+        {n:'Adeslas',f:138,i:'$248.700',c:'$198.200',e:'Parcial'},
+        {n:'Privados',f:278,i:'$451.230',c:'$421.500',e:'Pagado'}
+      ]
     },
     cobros:{
-      kpis:[{l:'Total cobrado',v:'$1.612.400',d:'▲ 7.4%',up:true},{l:'Cobrado este mes',v:'$158.200',d:'▲ 4.2%',up:true},{l:'Pendiente',v:'$329.780',d:'▼ 3.1%',up:false},{l:'Tasa cobro',v:'83.0%',d:'▲ 1.6pp',up:true}],
+      kpis:[
+        {l:'Total cobrado',v:'$1.612.400',d:'▲ 7.4%',up:true},
+        {l:'Cobrado este mes',v:'$158.200',d:'▲ 4.2%',up:true},
+        {l:'Pendiente',v:'$329.780',d:'▼ 3.1%',up:false},
+        {l:'Tasa cobro',v:'83.0%',d:'▲ 1.6pp',up:true}
+      ],
       bars:[{n:'Privados',v:421,m:650},{n:'Mapfre',v:289,m:650},{n:'Adeslas',v:198,m:650},{n:'Sanitas',v:205,m:650},{n:'Asisa',v:142,m:650}],
       chart:[122,145,168,148,189,212,185,142,224,198,212,178],
-      table:[{n:'Privados',f:278,i:'$451.230',c:'$421.500',e:'Pagado'},{n:'Mapfre',f:162,i:'$334.200',c:'$289.000',e:'Pagado'},{n:'Adeslas',f:138,i:'$248.700',c:'$198.200',e:'Parcial'}]
+      table:[
+        {n:'Privados',f:278,i:'$451.230',c:'$421.500',e:'Pagado'},
+        {n:'Mapfre',f:162,i:'$334.200',c:'$289.000',e:'Pagado'},
+        {n:'Adeslas',f:138,i:'$248.700',c:'$198.200',e:'Parcial'}
+      ]
     }
   }
 };
 
 const GASTOS_BASE = {
-  kpis:[{l:'Total gastos',v:'$1.124.500',d:'▲ 6.3%',up:false},{l:'Personal',v:'$687.200',d:'▲ 4.1%',up:false},{l:'Suministros',v:'$198.400',d:'▲ 11.2%',up:false},{l:'Operativos',v:'$238.900',d:'▲ 5.8%',up:false}],
+  kpis:[
+    {l:'Total gastos',v:'$1.124.500',d:'▲ 6.3%',up:false},
+    {l:'Personal',v:'$687.200',d:'▲ 4.1%',up:false},
+    {l:'Suministros',v:'$198.400',d:'▲ 11.2%',up:false},
+    {l:'Operativos',v:'$238.900',d:'▲ 5.8%',up:false}
+  ],
   bars:[{n:'Personal',v:687,m:800},{n:'Operativos',v:239,m:800},{n:'Suministros',v:198,m:800},{n:'Instalaciones',v:112,m:800},{n:'Tecnología',v:67,m:800},{n:'Otros',v:43,m:800}],
   chart:[82,88,97,91,101,98,89,76,104,99,103,96],
-  table:[{n:'Nóminas',f:12,i:'$687.200',c:'$687.200',e:'Pagado'},{n:'Alquiler local',f:12,i:'$112.300',c:'$112.300',e:'Pagado'},{n:'Material clínico',f:47,i:'$198.400',c:'$198.400',e:'Pagado'},{n:'Software / IT',f:8,i:'$67.400',c:'$67.400',e:'Pagado'},{n:'Suministros varios',f:23,i:'$59.200',c:'$59.200',e:'Parcial'}]
+  table:[
+    {n:'Nóminas',f:12,i:'$687.200',c:'$687.200',e:'Pagado'},
+    {n:'Alquiler local',f:12,i:'$112.300',c:'$112.300',e:'Pagado'},
+    {n:'Material clínico',f:47,i:'$198.400',c:'$198.400',e:'Pagado'},
+    {n:'Software / IT',f:8,i:'$67.400',c:'$67.400',e:'Pagado'},
+    {n:'Suministros varios',f:23,i:'$59.200',c:'$59.200',e:'Parcial'}
+  ]
 };
 
 function renderSection(s){
@@ -442,7 +511,6 @@ function renderSection(s){
   const kpiHtml=d.kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.l}</div><div class="kpi-val">${k.v}</div><div class="kpi-delta ${k.up?'up':'down'}">${k.d} vs año anterior</div></div>`).join('');
   const barsHtml=d.bars.map(b=>`<div class="bar-item"><div class="bar-name">${b.n}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(b.v/maxV*100)}%;background:${col}"></div></div><div class="bar-amount">$${b.v}k</div></div>`).join('');
   
-  // TABLA CORREGIDA - 5 COLUMNAS BIEN DEFINIDAS Y ALINEADAS
   const thHtml = ['Empresa / Fuente', 'Facturas', 'Importe', 'Cobrado', 'Estado'].map(t => `<th>${t}</th>`).join('');
   const trHtml = d.table.map(r => `
     <tr>
@@ -495,7 +563,7 @@ function renderETL(){
   const cards=[{icon:'📥',bg:'rgba(61,139,255,0.12)',l:'Archivos procesados',v:'1.247',p:78,c:'#3d8bff'},{icon:'✓',bg:'rgba(34,197,94,0.12)',l:'Registros cargados',v:'84.312',p:92,c:'#22c55e'},{icon:'⚠',bg:'rgba(245,158,11,0.12)',l:'Advertencias',v:'12',p:15,c:'#f59e0b'},{icon:'✕',bg:'rgba(239,68,68,0.12)',l:'Errores',v:'3',p:4,c:'#ef4444'},{icon:'⏱',bg:'rgba(45,212,191,0.12)',l:'Últ. ejecución',v:'08:14',p:100,c:'#2dd4bf'},{icon:'⇄',bg:'rgba(167,139,250,0.12)',l:'Estado pipeline',v:'Activo',p:100,c:'#a78bfa'}];
   const cardsHtml=cards.map(c=>`<div class="etl-card"><div class="etl-icon" style="background:${c.bg}">${c.icon}</div><div style="flex:1"><div class="etl-label">${c.l}</div><div class="etl-val" style="color:${c.c}">${c.v}</div><div class="progress-bar"><div class="progress-fill" style="width:${c.p}%;background:${c.c}"></div></div></div></div>`).join('');
   const files=[{n:'axon_feb2026.xlsx',src:'Axon',reg:'38.200',ok:'38.197',e:'Pagado',t:'hace 2h'},{n:'seoga_feb2026.xlsx',src:'Seoga',reg:'29.100',ok:'29.100',e:'Pagado',t:'hace 2h'},{n:'extracto_banco1.xlsx',src:'Extracto',reg:'11.400',ok:'11.398',e:'Parcial',t:'hace 3h'},{n:'manual_varios.xlsx',src:'Manual',reg:'5.600',ok:'5.598',e:'Pagado',t:'hace 5h'},{n:'psicotec_ene.xlsx',src:'Psicotéc.',reg:'2.100',ok:'2.098',e:'Parcial',t:'hace 5h'}];
-  return `<div class="etl-row">${cardsHtml}</div><div class="card"><div class="card-header"><span class="card-title">Archivos procesados — registro de actividad</span><div class="tabs"><button class="tab active" onclick="setTab(this)">Todos</button><button class="tab" onclick="setTab(this)">Con errores</button></div></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Archivo</th><th>Fuente</th><th style="text-align:right">Registros</th><th style="text-align:right">Cargados</th><th style="text-align:center">Estado</th><th>Procesado</th></tr></thead><tbody>${files.map(f=>`<tr><td style="font-family:var(--mono);font-size:11px">${f.n}</td><td><span class="badge b-blue">${f.src}</span></td><td class="mono" style="text-align:right">${f.reg}</td><td class="mono" style="text-align:right">${f.ok}</td><td style="text-align:center"><span class="badge ${STATE_CLASS[f.e]}"><span class="dot"></span>${f.e}</span></td><td style="color:var(--text3)">${f.t}</td></tr>`).join('')}</tbody>}></table></div></div>`;
+  return `<div class="etl-row">${cardsHtml}</div><div class="card"><div class="card-header"><span class="card-title">Archivos procesados — registro de actividad</span><div class="tabs"><button class="tab active" onclick="setTab(this)">Todos</button><button class="tab" onclick="setTab(this)">Con errores</button></div></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Archivo</th><th>Fuente</th><th style="text-align:right">Registros</th><th style="text-align:right">Cargados</th><th style="text-align:center">Estado</th><th>Procesado</th></tr></thead><tbody>${files.map(f=>`<tr><td style="font-family:var(--mono);font-size:11px">${f.n}</td><td><span class="badge b-blue">${f.src}</span></td><td class="mono" style="text-align:right">${f.reg}</td><td class="mono" style="text-align:right">${f.ok}</td><td style="text-align:center"><span class="badge ${STATE_CLASS[f.e]}"><span class="dot"></span>${f.e}</span></td><td style="color:var(--text3)">${f.t}</td></tr>`).join('')}</tbody>}</table></div></div>`;
 }
 
 function renderConfig(){
@@ -503,11 +571,15 @@ function renderConfig(){
 }
 
 function renderForecast(){
-  return `<div class="kpi-row"><div class="forecast-card"><div class="forecast-val">$3.210.000</div><div class="forecast-label">Proyección Q1 2026</div></div><div class="forecast-card"><div class="forecast-val">$3.450.000</div><div class="forecast-label">Proyección Q2 2026</div></div><div class="forecast-card"><div class="forecast-val">$3.680.000</div><div class="forecast-label">Proyección Q3 2026</div></div><div class="forecast-card"><div class="forecast-val">$3.920.000</div><div class="forecast-label">Proyección Q4 2026</div></div></div><div class="card"><div class="card-header"><span class="card-title">Tendencia de facturación 2026 vs 2025</span></div>${makeSvg([198,221,243,215,267,289,254,198,312,287,298,265].map((v,i)=>Math.round(v*1.12)),'#a78bfa')}</div><div class="card"><div class="card-header"><span class="card-title">Análisis de crecimiento</span></div><div class="bar-item"><div class="bar-name">Crecimiento esperado</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:#22c55e"></div></div><div class="bar-amount">+12.4%</div></div><div class="bar-item"><div class="bar-name">Margen neto</div><div class="bar-track"><div class="bar-fill" style="width:34%;background:#3d8bff"></div></div><div class="bar-amount">34%</div></div><div class="bar-item"><div class="bar-name">ROI estimado</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:#f59e0b"></div></div><div class="bar-amount">28%</div></div></div>`;
+  let proyecciones = {2024:'$2.850.000',2025:'$3.210.000',2026:'$3.580.000'};
+  return `<div class="kpi-row"><div class="forecast-card"><div class="forecast-val">${proyecciones[currentYear]}</div><div class="forecast-label">Proyección Anual ${currentYear}</div></div><div class="forecast-card"><div class="forecast-val">+${currentYear === 2024 ? '8.2' : (currentYear === 2025 ? '12.4' : '10.1')}%</div><div class="forecast-label">Crecimiento estimado</div></div><div class="forecast-card"><div class="forecast-val">${currentYear === 2024 ? '34.2' : (currentYear === 2025 ? '35.8' : '37.1')}%</div><div class="forecast-label">Margen proyectado</div></div><div class="forecast-card"><div class="forecast-val">${currentYear === 2024 ? '$892K' : (currentYear === 2025 ? '$1.02M' : '$1.18M')}</div><div class="forecast-label">Flujo de caja libre</div></div></div><div class="card"><div class="card-header"><span class="card-title">Tendencia de facturación ${currentYear}</span></div>${makeSvg(currentYear === 2024 ? [165,189,210,198,234,256,220,172,278,258,262,221] : (currentYear === 2025 ? [198,221,243,215,267,289,254,198,312,287,298,265] : [145,168,192,178,221,245,212,168,254,231,244,202]),'#a78bfa')}</div>`;
 }
 
 function renderCashflow(){
-  return `<div class="kpi-row"><div class="kpi-card"><div class="kpi-label">Saldo actual</div><div class="kpi-val">$842.500</div><div class="kpi-delta up">▲ +12.4%</div></div><div class="kpi-card"><div class="kpi-label">Entradas (este mes)</div><div class="kpi-val">$218.400</div><div class="kpi-delta up">▲ +5.1%</div></div><div class="kpi-card"><div class="kpi-label">Salidas (este mes)</div><div class="kpi-val">$187.200</div><div class="kpi-delta down">▼ -2.3%</div></div><div class="kpi-card"><div class="kpi-label">Flujo neto</div><div class="kpi-val">+$31.200</div><div class="kpi-delta up">▲ Positivo</div></div></div><div class="two-col"><div class="card"><div class="card-header"><span class="card-title">Próximos vencimientos</span></div><div class="bar-item"><div class="bar-name">Proveedores</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:#ef4444"></div></div><div class="bar-amount">$98.200</div></div><div class="bar-item"><div class="bar-name">Nóminas</div><div class="bar-track"><div class="bar-fill" style="width:32%;background:#ef4444"></div></div><div class="bar-amount">$68.500</div></div><div class="bar-item"><div class="bar-name">Impuestos</div><div class="bar-track"><div class="bar-fill" style="width:23%;background:#ef4444"></div></div><div class="bar-amount">$49.300</div></div></div><div class="card"><div class="card-header"><span class="card-title">Próximos cobros</span></div><div class="bar-item"><div class="bar-name">Seguros</div><div class="bar-track"><div class="bar-fill" style="width:52%;background:#22c55e"></div></div><div class="bar-amount">$124.500</div></div><div class="bar-item"><div class="bar-name">Privados</div><div class="bar-track"><div class="bar-fill" style="width:38%;background:#22c55e"></div></div><div class="bar-amount">$91.200</div></div><div class="bar-item"><div class="bar-name">Otros</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:#22c55e"></div></div><div class="bar-amount">$43.100</div></div></div></div><div class="card"><div class="card-header"><span class="card-title">Proyección de liquidez (próximos 30 días)</span></div>${makeSvg([842,865,890,912,935,958,972,995,1012,1035,1058,1080],'#2dd4bf')}</div>`;
+  let saldos = {2024:'$742.500',2025:'$842.500',2026:'$968.200'};
+  let entradas = {2024:'$195.200',2025:'$218.400',2026:'$245.600'};
+  let salidas = {2024:'$172.300',2025:'$187.200',2026:'$201.400'};
+  return `<div class="kpi-row"><div class="kpi-card"><div class="kpi-label">Saldo actual</div><div class="kpi-val">${saldos[currentYear]}</div><div class="kpi-delta up">▲ +${currentYear === 2024 ? '6.2' : (currentYear === 2025 ? '12.4' : '8.7')}%</div></div><div class="kpi-card"><div class="kpi-label">Entradas (este mes)</div><div class="kpi-val">${entradas[currentYear]}</div><div class="kpi-delta up">▲ +${currentYear === 2024 ? '3.8' : (currentYear === 2025 ? '5.1' : '4.2')}%</div></div><div class="kpi-card"><div class="kpi-label">Salidas (este mes)</div><div class="kpi-val">${salidas[currentYear]}</div><div class="kpi-delta down">▼ -${currentYear === 2024 ? '1.8' : (currentYear === 2025 ? '2.3' : '1.9')}%</div></div><div class="kpi-card"><div class="kpi-label">Flujo neto</div><div class="kpi-val">+${currentYear === 2024 ? '$22.900' : (currentYear === 2025 ? '$31.200' : '$44.200')}</div><div class="kpi-delta up">▲ Positivo</div></div></div><div class="two-col"><div class="card"><div class="card-header"><span class="card-title">Próximos vencimientos</span></div><div class="bar-item"><div class="bar-name">Proveedores</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:#ef4444"></div></div><div class="bar-amount">${currentYear === 2024 ? '$88.200' : (currentYear === 2025 ? '$98.200' : '$112.500')}</div></div><div class="bar-item"><div class="bar-name">Nóminas</div><div class="bar-track"><div class="bar-fill" style="width:32%;background:#ef4444"></div></div><div class="bar-amount">${currentYear === 2024 ? '$61.500' : (currentYear === 2025 ? '$68.500' : '$75.800')}</div></div><div class="bar-item"><div class="bar-name">Impuestos</div><div class="bar-track"><div class="bar-fill" style="width:23%;background:#ef4444"></div></div><div class="bar-amount">${currentYear === 2024 ? '$44.300' : (currentYear === 2025 ? '$49.300' : '$56.200')}</div></div></div><div class="card"><div class="card-header"><span class="card-title">Próximos cobros</span></div><div class="bar-item"><div class="bar-name">Seguros</div><div class="bar-track"><div class="bar-fill" style="width:52%;background:#22c55e"></div></div><div class="bar-amount">${currentYear === 2024 ? '$112.500' : (currentYear === 2025 ? '$124.500' : '$141.200')}</div></div><div class="bar-item"><div class="bar-name">Privados</div><div class="bar-track"><div class="bar-fill" style="width:38%;background:#22c55e"></div></div><div class="bar-amount">${currentYear === 2024 ? '$82.200' : (currentYear === 2025 ? '$91.200' : '$105.400')}</div></div><div class="bar-item"><div class="bar-name">Otros</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:#22c55e"></div></div><div class="bar-amount">${currentYear === 2024 ? '$38.900' : (currentYear === 2025 ? '$43.100' : '$48.700')}</div></div></div></div><div class="card"><div class="card-header"><span class="card-title">Proyección de liquidez ${currentYear}</span></div>${makeSvg(currentYear === 2024 ? [742,765,790,812,835,858,872,895,912,935,958,980] : (currentYear === 2025 ? [842,865,890,912,935,958,972,995,1012,1035,1058,1080] : [968,995,1020,1048,1075,1102,1128,1155,1182,1210,1238,1265]),'#2dd4bf')}</div>`;
 }
 
 function setTab(el){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
