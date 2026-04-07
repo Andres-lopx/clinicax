@@ -563,7 +563,41 @@ function renderETL(){
   const cards=[{icon:'📥',bg:'rgba(61,139,255,0.12)',l:'Archivos procesados',v:'1.247',p:78,c:'#3d8bff'},{icon:'✓',bg:'rgba(34,197,94,0.12)',l:'Registros cargados',v:'84.312',p:92,c:'#22c55e'},{icon:'⚠',bg:'rgba(245,158,11,0.12)',l:'Advertencias',v:'12',p:15,c:'#f59e0b'},{icon:'✕',bg:'rgba(239,68,68,0.12)',l:'Errores',v:'3',p:4,c:'#ef4444'},{icon:'⏱',bg:'rgba(45,212,191,0.12)',l:'Últ. ejecución',v:'08:14',p:100,c:'#2dd4bf'},{icon:'⇄',bg:'rgba(167,139,250,0.12)',l:'Estado pipeline',v:'Activo',p:100,c:'#a78bfa'}];
   const cardsHtml=cards.map(c=>`<div class="etl-card"><div class="etl-icon" style="background:${c.bg}">${c.icon}</div><div style="flex:1"><div class="etl-label">${c.l}</div><div class="etl-val" style="color:${c.c}">${c.v}</div><div class="progress-bar"><div class="progress-fill" style="width:${c.p}%;background:${c.c}"></div></div></div></div>`).join('');
   const files=[{n:'axon_feb2026.xlsx',src:'Axon',reg:'38.200',ok:'38.197',e:'Pagado',t:'hace 2h'},{n:'seoga_feb2026.xlsx',src:'Seoga',reg:'29.100',ok:'29.100',e:'Pagado',t:'hace 2h'},{n:'extracto_banco1.xlsx',src:'Extracto',reg:'11.400',ok:'11.398',e:'Parcial',t:'hace 3h'},{n:'manual_varios.xlsx',src:'Manual',reg:'5.600',ok:'5.598',e:'Pagado',t:'hace 5h'},{n:'psicotec_ene.xlsx',src:'Psicotéc.',reg:'2.100',ok:'2.098',e:'Parcial',t:'hace 5h'}];
-  return `<div class="etl-row">${cardsHtml}</div><div class="card"><div class="card-header"><span class="card-title">Archivos procesados — registro de actividad</span><div class="tabs"><button class="tab active" onclick="setTab(this)">Todos</button><button class="tab" onclick="setTab(this)">Con errores</button></div></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Archivo</th><th>Fuente</th><th style="text-align:right">Registros</th><th style="text-align:right">Cargados</th><th style="text-align:center">Estado</th><th>Procesado</th></tr></thead><tbody>${files.map(f=>`<tr><td style="font-family:var(--mono);font-size:11px">${f.n}</td><td><span class="badge b-blue">${f.src}</span></td><td class="mono" style="text-align:right">${f.reg}</td><td class="mono" style="text-align:right">${f.ok}</td><td style="text-align:center"><span class="badge ${STATE_CLASS[f.e]}"><span class="dot"></span>${f.e}</span></td><td style="color:var(--text3)">${f.t}</td></tr>`).join('')}</tbody></table></div></div>`;
+  
+  return `<div class="etl-row">${cardsHtml}</div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Archivos procesados — registro de actividad</span>
+        <div class="tabs">
+          <button class="tab active" onclick="setTab(this)">Todos</button>
+          <button class="tab" onclick="setTab(this)">Con errores</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Archivo</th>
+              <th>Fuente</th>
+              <th style="text-align:right">Registros</th>
+              <th style="text-align:right">Cargados</th>
+              <th style="text-align:center">Estado</th>
+              <th>Procesado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${files.map(f=>`<tr>
+              <td style="font-family:var(--mono);font-size:11px">${f.n}</td>
+              <td><span class="badge b-blue">${f.src}</span></td>
+              <td class="mono" style="text-align:right">${f.reg}</td>
+              <td class="mono" style="text-align:right">${f.ok}</td>
+              <td style="text-align:center"><span class="badge ${STATE_CLASS[f.e]}"><span class="dot"></span>${f.e}</span></td>
+              <td style="color:var(--text3)">${f.t}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
 }
 
 function renderConfig(){
